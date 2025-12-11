@@ -42,7 +42,7 @@ class ProdukResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\TransaksiRelationManager::class,
         ];
     }
 
