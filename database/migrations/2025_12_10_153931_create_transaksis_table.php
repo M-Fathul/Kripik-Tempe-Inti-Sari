@@ -22,7 +22,6 @@ return new class extends Migration
             $table->integer('year');
             $table->integer('quarter');
             $table->integer('week_number');
-            $table->integer('hour_of_day');
             $table->timestamps();
             $table->softDeletes();
             
@@ -31,7 +30,6 @@ return new class extends Migration
             $table->index(['year', 'month_name']);
             $table->index(['year', 'quarter']);
             $table->index('day_of_week');
-            $table->index('hour_of_day');
             $table->index(['produk_id', 'tanggal_transaksi']);
         });
     }
