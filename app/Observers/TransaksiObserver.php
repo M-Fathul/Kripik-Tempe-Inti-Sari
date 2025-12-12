@@ -46,6 +46,10 @@ class TransaksiObserver
      */
     public function deleted(Transaksi $transaksi): void
     {
+        if ($transaksi->isForceDeleting()) {
+            return; 
+        }
+        
         $produk = $transaksi->produk;
         if ($produk) {
             $produk->increment('stok', $transaksi->quantity);
@@ -70,10 +74,6 @@ class TransaksiObserver
      */
     public function forceDeleted(Transaksi $transaksi): void
     {
-        $produk = $transaksi->produk;
-        if ($produk) {
-            $produk->increment('stok', $transaksi->quantity);
-            $produk->decrement('total_terjual', $transaksi->quantity);
-        }
+        //
     }
 }

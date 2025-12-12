@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Produks\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
@@ -12,6 +14,7 @@ use Filament\Forms\Components\Slider;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Produk;
@@ -135,10 +138,14 @@ class ProduksTable
                         'orisinil' => 'Orisinil',
                         'eksternal' => 'Eksternal',
                     ]),
+                TrashedFilter::make()
+                    ->label('Terhapus')
             ])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                DeleteAction::make(),
+                ForceDeleteAction::make()
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

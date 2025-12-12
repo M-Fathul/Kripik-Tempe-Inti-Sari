@@ -20,11 +20,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
-
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -225,7 +225,7 @@ class TransaksiResource extends Resource
                         DatePicker::make('created_until')->label('Hingga tanggal transaksi')
                             ->native(false)
                             ->reactive()
-                            ->minDate(fn ($get) => $get('created_from'))
+                            ->minDate(fn($get) => $get('created_from'))
                             ->closeOnDateSelection(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -245,7 +245,9 @@ class TransaksiResource extends Resource
                     ->multiple()
                     ->searchable()
                     ->preload(),
-                
+                TrashedFilter::make()
+                    ->label('Terhapus')
+
             ])
             ->recordActions([
                 ViewAction::make(),
