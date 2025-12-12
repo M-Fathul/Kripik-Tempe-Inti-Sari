@@ -11,6 +11,6 @@ class Kategori extends Model
     use SoftDeletes;
     public function produk(): HasMany
     {
-        return $this->hasMany(Kategori::class);
+        return $this->hasMany(Produk::class);
     }
 }
