@@ -14,6 +14,7 @@ class TransaksiObserver
         $produk = $transaksi->produk;
         if ($produk) {
             $produk->decrement('stok', $transaksi->quantity);
+            $produk->increment('total_terjual', $transaksi->quantity);
         }
     }
 
@@ -31,8 +32,10 @@ class TransaksiObserver
             if ($produk) {
                 if ($difference > 0) {
                     $produk->decrement('stok', $difference);
+                    $produk->increment('total_terjual', $difference);
                 } elseif ($difference < 0) {
                     $produk->increment('stok', abs($difference));
+                    $produk->decrement('total_terjual', abs($difference));
                 }
             }
         }
@@ -46,6 +49,7 @@ class TransaksiObserver
         $produk = $transaksi->produk;
         if ($produk) {
             $produk->increment('stok', $transaksi->quantity);
+            $produk->decrement('total_terjual', $transaksi->quantity);
         }
     }
 
@@ -57,6 +61,7 @@ class TransaksiObserver
         $produk = $transaksi->produk;
         if ($produk) {
             $produk->decrement('stok', $transaksi->quantity);
+            $produk->increment('total_terjual', $transaksi->quantity);
         }
     }
 
@@ -68,6 +73,7 @@ class TransaksiObserver
         $produk = $transaksi->produk;
         if ($produk) {
             $produk->increment('stok', $transaksi->quantity);
+            $produk->decrement('total_terjual', $transaksi->quantity);
         }
     }
 }
