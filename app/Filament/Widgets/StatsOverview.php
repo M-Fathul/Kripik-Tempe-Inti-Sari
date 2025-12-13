@@ -2,13 +2,14 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Transaksi;
 use App\Models\Produk;
 use Carbon\Carbon;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Number;
-use App\Models\Transaksi;
+
 
 class StatsOverview extends BaseWidget
 {

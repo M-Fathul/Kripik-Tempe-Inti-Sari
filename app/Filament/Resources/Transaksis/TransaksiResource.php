@@ -73,7 +73,7 @@ class TransaksiResource extends Resource
                         $set('month_name', $dt->monthName);
                         $set('year', $dt->year);
                         $set('quarter', $dt->quarter);
-                        $set('week_number', $dt->weekOfMonth);
+                        $set('week_number', $dt->weekOfYear);
                     }),
                 Select::make('produk_id')
                     ->relationship('produk', 'nama_produk')
@@ -124,7 +124,7 @@ class TransaksiResource extends Resource
                     ->label('Minggu ke-')
                     ->required()
                     ->numeric()
-                    ->default(now()->weekOfMonth),
+                    ->default(now()->weekOfYear),
             ]);
     }
 
