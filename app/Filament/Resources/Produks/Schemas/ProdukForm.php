@@ -31,7 +31,6 @@ class ProdukForm
                     ->default(0),
                 Select::make('kategori_id')
                     ->relationship('kategori', 'nama_kategori')
-                    ->required()
                     ->preload()
                     ->searchable()
                     ->createOptionForm([

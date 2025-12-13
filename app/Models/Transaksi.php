@@ -27,6 +27,7 @@ class Transaksi extends Model
         'week_number',
     ];
 
+
     public function produk(): BelongsTo
     {
         return $this->belongsTo(Produk::class);

@@ -48,6 +48,7 @@ class TransaksiResource extends Resource
                     ->reactive()
                     ->format('d/m/Y')
                     ->default(now())
+                    ->closeOnDateSelection()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         if (empty($state)) {
                             $set('day_of_week', null);
