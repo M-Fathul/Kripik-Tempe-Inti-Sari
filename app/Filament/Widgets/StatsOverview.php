@@ -121,7 +121,7 @@ class StatsOverview extends BaseWidget
 
 
         return [
-            Stat::make('Profit', 'Rp. ' . $formatNumber($profit))
+            Stat::make('Omset', 'Rp. ' . $formatNumber($profit))
                 ->descriptionIcon($panah($profitawal, $profit))
                 ->description('Kurang lebih dari ' . $ringkas($profitawal) . ' ke ' . $ringkas($profit) . ' ' . $persentase($profitawal, $profit))
                 ->chart($chardata($profitawal, $profit))

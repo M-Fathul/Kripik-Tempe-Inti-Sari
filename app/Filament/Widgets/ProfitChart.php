@@ -12,7 +12,7 @@ class ProfitChart extends ChartWidget
 
     use InteractsWithPageFilters;
     protected static ?int $sort = 1;
-    protected ?string $heading = 'Grafik Profit Penjualan';
+    protected ?string $heading = 'Grafik Omset Penjualan';
 
     protected function getFilters(): ?array
     {
@@ -65,7 +65,7 @@ class ProfitChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Profit Penjualan per-' . $activeGroupColumn . ' tahunan' ,
+                    'label' => 'Omset Penjualan per-' . $activeGroupColumn . ' tahunan' ,
                     'data' => $dataset
                 ],
             ],
