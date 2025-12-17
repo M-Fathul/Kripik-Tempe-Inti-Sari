@@ -37,9 +37,10 @@ class StatsOverview extends BaseWidget
             ->sum('total');
 
         $profitawal = Transaksi::query()
-            ->whereDate('tanggal_transaksi', '<=', $startDate)
-            ->when($produk, fn($query) => $query->where('produk_id', $produk))
-            ->sum('total');
+            ->when($produk, fn($q) => $q->where('produk_id', $produk))
+            ->whereBetween('tanggal_transaksi', [$startDate, $endDate])
+            ->orderBy('tanggal_transaksi')
+            ->value('tanggal_transaksi')->sum('total');
 
         $terjual = Transaksi::query()
             ->when($startDate, fn($query) => $query->where('tanggal_transaksi', '>=', $startDate))
@@ -48,9 +49,10 @@ class StatsOverview extends BaseWidget
             ->sum('quantity');
 
         $terjualtawal = Transaksi::query()
-            ->whereDate('tanggal_transaksi', '<=', $startDate)
-            ->when($produk, fn($query) => $query->where('produk_id', $produk))
-            ->sum('quantity');
+            ->when($produk, fn($q) => $q->where('produk_id', $produk))
+            ->whereBetween('tanggal_transaksi', [$startDate, $endDate])
+            ->orderBy('tanggal_transaksi')
+            ->value('quantity');
 
         $jumlahJenisProduk = $produk
             ? 1
@@ -69,18 +71,20 @@ class StatsOverview extends BaseWidget
         };
 
         $color = function (int $awal, int $akhir): string {
-            if ($awal == $akhir) {
+            $titikakhir = $akhir - $awal;
+            if ($titikakhir == 0) {
                 return '';
-            } elseif ($awal < $akhir) {
+            } elseif ($awal < $titikakhir) {
                 return 'success';
             }
             return 'danger';
         };
 
         $panah = function (int $awal, int $akhir): string {
-            if ($awal == $akhir) {
+            $titikend = $akhir - $awal;
+            if ($titikend == 0) {
                 return 'heroicon-m-arrow-right';
-            } elseif ($awal < $akhir) {
+            } elseif ($awal < $titikend) {
                 return 'heroicon-m-arrow-trending-up';
             }
             return 'heroicon-m-arrow-trending-down';
@@ -111,9 +115,9 @@ class StatsOverview extends BaseWidget
 
         $chardata = function ($awal, $akhir) {
             if ($awal == $akhir) {
-                return [5,5,5,5,5,5,5,5];
+                return [5, 5, 5, 5, 5, 5, 5, 5];
             } elseif ($awal > $akhir) {
-                return [9,6,7,4,5,2,3,0];
+                return [9, 6, 7, 4, 5, 2, 3, 0];
             }
             return [0, 3, 2, 5, 4, 7, 6, 9];
         };
@@ -123,7 +127,7 @@ class StatsOverview extends BaseWidget
         return [
             Stat::make('Omset', 'Rp. ' . $formatNumber($profit))
                 ->descriptionIcon($panah($profitawal, $profit))
-                ->description('Kurang lebih dari ' . $ringkas($profitawal) . ' ke ' . $ringkas($profit) . ' ' . $persentase($profitawal, $profit))
+                ->description('Kurang lebih dari ' . $ringkas($profitawal) . ' menjadi ' . $ringkas($profit) . ' ' . $persentase($profitawal, $profit))
                 ->chart($chardata($profitawal, $profit))
                 ->color($color($profitawal, $profit))
                 ->reactive(),
