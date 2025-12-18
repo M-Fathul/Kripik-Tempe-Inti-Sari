@@ -14,7 +14,10 @@ class ProdukForm
         return $schema
             ->components([
                 FileUpload::make('image')
-                    ->image(),
+                    ->image()
+                    ->directory('produk')
+                    ->disk('public')
+                    ->imageEditor(),
                 TextInput::make('nama_produk')
                     ->required(),
                 TextInput::make('harga_produk')

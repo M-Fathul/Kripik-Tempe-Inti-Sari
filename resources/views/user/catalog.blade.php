@@ -3,7 +3,8 @@
 @section('content')
 
 {{-- HERO SECTION --}}
-<section class="w-11/12 mx-auto mt-16 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+<div class="max-w-7xl mx-auto min-h-screen">
+<section class="w-11/12 mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
     
     <div>
         <h1 class="text-4xl md:text-5xl font-bold mb-6">Kunjungi Toko Kami</h1>
@@ -19,9 +20,16 @@
            Hubungi Kami
         </a>
     </div>
+    <div class="relative">
+        <img src="/assets/etalase.png"
+         class="rounded-r-3xl w-auto h-[420px] object-cover">
 
-    <img src="/assets/etalase.png"
-         class="rounded-3xl shadow-xl w-full object-cover">
+        <div class="absolute top-0 left-0 w-full h-full 
+                    bg-linear-to-r from-background via-background/40 to-transparent via-40%">
+        </div>
+    </div>
+
+    
 </section>
 
 {{-- PRODUK TITLE --}}
@@ -36,18 +44,37 @@
 </section>
 
 {{-- PRODUK GRID --}}
-<section class="w-11/12 mx-auto mt-10 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6">
+<section class="w-11/12 mx-auto mt-10 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 px-16">
 
-    @foreach(range(1,8) as $i)
-        <div class="bg-white p-4 rounded-3xl shadow-md hover:shadow-xl transition">
-            <img src="/assets/keripik.jpg" class="rounded-2xl mb-4 w-full">
-            
-            <small class="text-orange-500">Stok: 10</small>
-            <p class="font-semibold mt-1">Kripik Tempe</p>
-            <p class="text-gray-500 text-sm">Rp. xxxxx</p>
+    @foreach($produks as $produk)
+        <div class="bg-white rounded-r-3xl col-span-2 shadow-md flex pr-6">
+            <div class="w-4 h-full bg-secondary"></div>
+
+            <img src="{{ asset('storage/' . $produk->image) }}"
+                class="w-full h-24 object-cover">
+
+            <div class="p-4 flex flex-col w-full justify-center">
+                <p class="font-semibold">
+                    {{ $produk->nama_produk }}
+                </p>
+
+                <div class="flex justify-between w-full mt-2">
+                    <p class="font-light text-sm">
+                        Rp {{ number_format($produk->harga_produk, 0, ',', '.') }}
+                    </p>
+                    <small class="text-light">
+                        Stok: {{ $produk->stok }}
+                    </small>
+                </div>
+            </div>
+
         </div>
     @endforeach
 
-</section>
+    <div class="col-span-2 md:col-span-4 flex justify-center mt-6">
+        {{ $produks->links() }}
+    </div>
 
+</section>
+</div>
 @endsection
