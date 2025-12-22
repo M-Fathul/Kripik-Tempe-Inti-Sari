@@ -40,7 +40,7 @@ class StatsOverview extends BaseWidget
             ->when($produk, fn($q) => $q->where('produk_id', $produk))
             ->whereBetween('tanggal_transaksi', [$startDate, $endDate])
             ->orderBy('tanggal_transaksi')
-            ->value('tanggal_transaksi')->sum('total');
+            ->value('total');
 
         $terjual = Transaksi::query()
             ->when($startDate, fn($query) => $query->where('tanggal_transaksi', '>=', $startDate))
@@ -70,7 +70,7 @@ class StatsOverview extends BaseWidget
             return Number::format($number);
         };
 
-        $color = function (int $awal, int $akhir): string {
+        $color = function ($awal, $akhir): string {
             $titikakhir = $akhir - $awal;
             if ($titikakhir == 0) {
                 return '';
@@ -80,7 +80,7 @@ class StatsOverview extends BaseWidget
             return 'danger';
         };
 
-        $panah = function (int $awal, int $akhir): string {
+        $panah = function ($awal,$akhir): string {
             $titikend = $akhir - $awal;
             if ($titikend == 0) {
                 return 'heroicon-m-arrow-right';
@@ -90,7 +90,10 @@ class StatsOverview extends BaseWidget
             return 'heroicon-m-arrow-trending-down';
         };
 
-        $ringkas = function (int $number): string {
+        $ringkas = function ($number): string {
+            if (!$number) {
+                return '-';
+            }
             if ($number < 1000) {
                 return (string) Number::format($number, 1);
             }
@@ -102,7 +105,7 @@ class StatsOverview extends BaseWidget
             return Number::format($number / 1000000, 1) . 'jt';
         };
 
-        $persentase = function (int $awal, int $akhir): string {
+        $persentase = function ($awal,$akhir): string {
             if ($awal == $akhir) {
                 return '0%';
             } elseif ($awal == 0) {
