@@ -30,17 +30,17 @@ class StatsOverview extends BaseWidget
 
         $produk = $this->pageFilters['produk_id'] ?? false;
 
-        $profit = Transaksi::query()
+        $omset = Transaksi::query()
             ->when($startDate, fn($query) => $query->where('tanggal_transaksi', '>=', $startDate))
             ->when($endDate, fn($query) => $query->where('tanggal_transaksi', '<=', $endDate))
             ->when($produk, fn($query) => $query->where('produk_id', $produk))
             ->sum('total');
 
-        $profitawal = Transaksi::query()
-            ->when($produk, fn($q) => $q->where('produk_id', $produk))
-            ->whereBetween('tanggal_transaksi', [$startDate, $endDate])
+        $omsetawal = Transaksi::query()
+            ->when($startDate, fn($query) => $query->where('tanggal_transaksi', '<=', $startDate))
+            ->when($produk, fn($query) => $query->where('produk_id', $produk))
             ->orderBy('tanggal_transaksi')
-            ->value('total');
+            ->sum('total');
 
         $terjual = Transaksi::query()
             ->when($startDate, fn($query) => $query->where('tanggal_transaksi', '>=', $startDate))
@@ -48,11 +48,11 @@ class StatsOverview extends BaseWidget
             ->when($produk, fn($query) => $query->where('produk_id', $produk))
             ->sum('quantity');
 
-        $terjualtawal = Transaksi::query()
-            ->when($produk, fn($q) => $q->where('produk_id', $produk))
-            ->whereBetween('tanggal_transaksi', [$startDate, $endDate])
+        $terjualtsebelumnya = Transaksi::query()
+            ->when($startDate, fn($query) => $query->where('tanggal_transaksi', '<=', $startDate))
+            ->when($produk, fn($query) => $query->where('produk_id', $produk))
             ->orderBy('tanggal_transaksi')
-            ->value('quantity');
+            ->sum('quantity');
 
         $jumlahJenisProduk = $produk
             ? 1
@@ -71,23 +71,17 @@ class StatsOverview extends BaseWidget
         };
 
         $color = function ($awal, $akhir): string {
-            $titikakhir = $akhir - $awal;
-            if ($titikakhir == 0) {
-                return '';
-            } elseif ($awal < $titikakhir) {
+            if ($awal < $akhir) {
                 return 'success';
             }
-            return 'danger';
+            return '';
         };
 
-        $panah = function ($awal,$akhir): string {
-            $titikend = $akhir - $awal;
-            if ($titikend == 0) {
-                return 'heroicon-m-arrow-right';
-            } elseif ($awal < $titikend) {
+        $panah = function ($awal, $akhir): string {
+            if ($awal < $akhir) {
                 return 'heroicon-m-arrow-trending-up';
             }
-            return 'heroicon-m-arrow-trending-down';
+            return 'heroicon-m-arrow-right';
         };
 
         $ringkas = function ($number): string {
@@ -105,14 +99,11 @@ class StatsOverview extends BaseWidget
             return Number::format($number / 1000000, 1) . 'jt';
         };
 
-        $persentase = function ($awal,$akhir): string {
-            if ($awal == $akhir) {
-                return '0%';
-            } elseif ($awal == 0) {
+        $persentase = function ($awal, $akhir): string {
+            if ($awal == 0) {
                 return '100%';
             }
-            $diff = $akhir - $awal;
-            $percent = ($diff / $awal) * 100;
+            $percent = ($akhir / $awal) * 100;
             return number_format($percent, 0) . '%';
         };
 
@@ -128,17 +119,17 @@ class StatsOverview extends BaseWidget
 
 
         return [
-            Stat::make('Omset', 'Rp. ' . $formatNumber($profit))
-                ->descriptionIcon($panah($profitawal, $profit))
-                ->description('Kurang lebih dari ' . $ringkas($profitawal) . ' menjadi ' . $ringkas($profit) . ' ' . $persentase($profitawal, $profit))
-                ->chart($chardata($profitawal, $profit))
-                ->color($color($profitawal, $profit))
+            Stat::make('Omset', 'Rp. ' . $formatNumber($omset))
+                ->descriptionIcon($panah($omsetawal, $omset))
+                ->description('Omset periode sebelumnya ' . $ringkas($omsetawal) . ' menjadi ' . $ringkas($omset + $omsetawal) . ' ' . $persentase($omsetawal, $omset))
+                ->chart($chardata($omsetawal, $omset))
+                ->color($color($omsetawal, $omset))
                 ->reactive(),
             Stat::make('Terjual', $formatNumber($terjual))
-                ->descriptionIcon($panah($terjualtawal, $terjual))
-                ->description('Kurang lebih dari ' . $terjualtawal . ' ke ' . $terjual . ' ' . $persentase($terjualtawal, $terjual))
-                ->chart($chardata($terjualtawal, $terjual))
-                ->color($color($terjualtawal, $terjual))
+                ->descriptionIcon($panah($terjualtsebelumnya, $terjual))
+                ->description('Kurang lebih dari ' . $terjualtsebelumnya . ' ke ' . $terjual . ' ' . $persentase($terjualtsebelumnya, $terjual))
+                ->chart($chardata($terjualtsebelumnya, $terjual))
+                ->color($color($terjualtsebelumnya, $terjual))
                 ->reactive(),
             Stat::make('Jenis Produk', $formatNumber($jumlahJenisProduk))
                 ->description($descjenisproduk)
