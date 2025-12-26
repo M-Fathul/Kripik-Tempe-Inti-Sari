@@ -17,10 +17,8 @@ return new class extends Migration
             $table->foreignId('produk_id')->constrained('produks')->cascadeOnDelete();
             $table->integer('quantity');
             $table->decimal('total', 12, 2);
-            $table->string('day_of_week');
             $table->string('month_name');
             $table->integer('year');
-            $table->integer('quarter');
             $table->integer('week_number');
             $table->timestamps();
             $table->softDeletes();

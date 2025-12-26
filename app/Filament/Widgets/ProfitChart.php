@@ -27,51 +27,97 @@ class ProfitChart extends ChartWidget
     protected function getDefaultFilters(): ?array
     {
         return [
-            'tanggal_transaksi', 
+            'tanggal_transaksi',
         ];
     }
 
     protected function getData(): array
     {
+        $filter = $this->filter ?? 'tanggal_transaksi';
 
-        $activeGroupColumn = $this->filter ?? 'tanggal_transaksi';
-        $startDate = !is_null($this->pageFilters['startDate'] ?? null) ?
-            Carbon::parse($this->pageFilters['startDate']) :
-            (Transaksi::min('tanggal_transaksi') ?: now());
+        $startDate = !empty($this->pageFilters['startDate'])
+            ? Carbon::parse($this->pageFilters['startDate'])
+            : (Transaksi::min('tanggal_transaksi') ?? now());
 
-        $endDate = !is_null($this->pageFilters['endDate'] ?? null) ?
-            Carbon::parse($this->pageFilters['endDate']) :
-            (Transaksi::max('tanggal_transaksi') ?: now());
+        $endDate = !empty($this->pageFilters['endDate'])
+            ? Carbon::parse($this->pageFilters['endDate'])
+            : (Transaksi::max('tanggal_transaksi') ?? now());
 
-        $produk = $this->pageFilters['produk_id'] ?? false;      
+        $produk = $this->pageFilters['produk_id'] ?? null;
 
-        $data = Transaksi::query()
-            ->when($startDate, fn($query) => $query->where('tanggal_transaksi', '>=', $startDate))
-            ->when($endDate, fn($query) => $query->where('tanggal_transaksi', '<=', $endDate))
-            ->when($produk, fn($query) => $query->where('produk_id', $produk))
-            ->selectRaw("$activeGroupColumn as label, SUM(total) as total_profit")
-            ->groupBy("$activeGroupColumn")
-            ->orderBy('label', 'asc')
-            ->get();
-        
-        $labels = $data->pluck('label');
-        if ($activeGroupColumn === 'tanggal_transaksi') {
-        $labels = $labels->map(function ($dateString) {
-            return Carbon::parse($dateString)->format('d M y');
-        });
-    } 
-        $dataset = $data->pluck('total_profit');
+        $q = Transaksi::query()
+            ->when($startDate, fn ($q) =>
+                $q->whereDate('tanggal_transaksi', '>=', $startDate)
+            )
+            ->when($endDate, fn ($q) =>
+                $q->whereDate('tanggal_transaksi', '<=', $endDate)
+            )
+            ->when($produk, fn ($q) =>
+                $q->where('produk_id', $produk)
+            );
+
+        if ($filter === 'week_number') {
+
+            $q->selectRaw('
+                year,
+                week_number,
+                CONCAT(year, " - Minggu ", LPAD(week_number, 2, "0")) as label,
+                SUM(total) as total_profit
+            ')
+            ->groupBy('year', 'week_number')
+            ->orderBy('year')
+            ->orderBy('week_number');
+
+        } elseif ($filter === 'month_name') {
+
+            $q->selectRaw('
+                year,
+                MONTH(tanggal_transaksi) as month_number,
+                CONCAT(month_name, " ", year) as label,
+                SUM(total) as total_profit
+            ')
+            ->groupBy('year', 'month_number', 'month_name')
+            ->orderBy('year')
+            ->orderBy('month_number');
+
+        } elseif ($filter === 'year') {
+
+            $q->selectRaw('
+                year as label,
+                SUM(total) as total_profit
+            ')
+            ->groupBy('year')
+            ->orderBy('year');
+
+        } else {
+            $q->selectRaw('
+                DATE(tanggal_transaksi) as label,
+                SUM(total) as total_profit
+            ')
+            ->groupByRaw('DATE(tanggal_transaksi)')
+            ->orderByRaw('DATE(tanggal_transaksi)');
+        }
+
+        $data = $q->get();
+        if ($filter === 'tanggal_transaksi') {
+            $labels = $data->pluck('label')->map(
+                fn ($d) => Carbon::parse($d)->format('d M Y')
+            );
+        } else {
+            $labels = $data->pluck('label');
+        }
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Omset Penjualan per-' . $activeGroupColumn . ' tahunan' ,
-                    'data' => $dataset
+                    'label' => 'Omset Penjualan',
+                    'data' => $data->pluck('total_profit'),
                 ],
             ],
-            'labels' => $labels
+            'labels' => $labels,
         ];
     }
+
 
     protected function getType(): string
     {

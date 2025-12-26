@@ -68,11 +68,8 @@ class TransaksiResource extends Resource
                         } catch (\Exception $e) {
                             return;
                         }
-
-                        $set('day_of_week', $dt->dayName);
                         $set('month_name', $dt->monthName);
                         $set('year', $dt->year);
-                        $set('quarter', $dt->quarter);
                         $set('week_number', $dt->weekOfYear);
                     }),
                 Select::make('produk_id')
@@ -101,11 +98,6 @@ class TransaksiResource extends Resource
                     ->numeric()
                     ->default(0)
                     ->prefix('Rp '),
-
-                TextInput::make('day_of_week')
-                    ->label('Hari')
-                    ->required()
-                    ->default(now()->dayName),
                 TextInput::make('month_name')
                     ->label('Bulan')
                     ->required()
@@ -115,11 +107,6 @@ class TransaksiResource extends Resource
                     ->required()
                     ->numeric()
                     ->default(now()->year),
-                TextInput::make('quarter')
-                    ->label('Kuartil Tahun ke-')
-                    ->required()
-                    ->numeric()
-                    ->default(now()->quarter),
                 TextInput::make('week_number')
                     ->label('Minggu ke-')
                     ->required()
@@ -140,15 +127,10 @@ class TransaksiResource extends Resource
                     ->numeric(),
                 TextEntry::make('total')
                     ->money('IDR'),
-                TextEntry::make('day_of_week')
-                    ->label('Hari'),
                 TextEntry::make('month_name')
                     ->label('Bulan'),
                 TextEntry::make('year')
                     ->label('Tahun'),
-                TextEntry::make('quarter')
-                    ->numeric()
-                    ->label('Kuartil Tahun ke-'),
                 TextEntry::make('week_number')
                     ->numeric()
                     ->label('Minggu ke-'),
@@ -178,10 +160,6 @@ class TransaksiResource extends Resource
                 TextColumn::make('total')
                     ->money('IDR')
                     ->sortable(),
-                TextColumn::make('day_of_week')
-                    ->label('Hari')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('month_name')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -190,11 +168,6 @@ class TransaksiResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Tahun'),
-                TextColumn::make('quarter')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->label('Kuartil Tahun ke-'),
                 TextColumn::make('week_number')
                     ->numeric()
                     ->sortable()

@@ -20,10 +20,8 @@ class Transaksi extends Model
         'produk_id',
         'quantity',
         'total',
-        'day_of_week',
         'month_name',
         'year',
-        'quarter',
         'week_number',
     ];
 
