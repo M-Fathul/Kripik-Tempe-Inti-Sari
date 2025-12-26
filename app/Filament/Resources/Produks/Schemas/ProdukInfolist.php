@@ -14,7 +14,12 @@ class ProdukInfolist
         return $schema
             ->components([
                 ImageEntry::make('image')
-                    ->placeholder('-'),
+                    ->label('Gambar Produk')
+                    ->disk('public')        
+                    ->visibility('public')   
+                    ->height(250)
+                    ->columnSpanFull()
+                    ->placeholder('Tidak ada gambar'),
                 TextEntry::make('nama_produk'),
                 TextEntry::make('harga_produk')
                     ->numeric()
@@ -37,7 +42,7 @@ class ProdukInfolist
                     ->placeholder('-'),
                 TextEntry::make('deleted_at')
                     ->dateTime()
-                    ->visible(fn (Produk $record): bool => $record->trashed()),
+                    ->visible(fn(Produk $record): bool => $record->trashed()),
             ]);
     }
 }

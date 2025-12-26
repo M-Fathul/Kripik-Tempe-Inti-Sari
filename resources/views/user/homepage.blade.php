@@ -7,9 +7,9 @@
     <h1 class="text-center text-4xl md:text-5xl font-bold text-red-600 drop-shadow-md">
         Kripik Tempe Inti Sari
     </h1>
-
-    <img src="/assets/logo.jpg"
-         class="mx-auto mt-8 w-64 md:w-80 rounded-full shadow-lg">
+<!-- 
+    <img src="/assets/hero.png"
+         class="mx-auto mt-8 w-64 md:w-80"> -->
 </section>
 
 <!-- PRODUK UTAMA -->
@@ -25,23 +25,22 @@
                     no-scrollbar">
             @php
                 $utama = [
-                    ['img'=>'logo.jpg','nama'=>'Kripik Tempe Original','harga'=>'15.000'],
-                    ['img'=>'kripik_dage.jpg','nama'=>'Kripik Tempe Pedas','harga'=>'16.000'],
-                    ['img'=>'sale_goreng.jpg','nama'=>'Kripik Tempe Barbeque','harga'=>'17.000'],
-                    ['img'=>'bolu_ketapang.jpg','nama'=>'Kripik Tempe Balado','harga'=>'18.000'],
+                    ['img'=>'logo.jpg','nama'=>'Kripik Tempe Original'],
+                    ['img'=>'kripik_dage.jpg','nama'=>'Kripik Tempe Pedas'],
+                    ['img'=>'sale_goreng.jpg','nama'=>'Kripik Tempe Barbeque'],
+                    ['img'=>'bolu_ketapang.jpg','nama'=>'Kripik Tempe Balado'],
                 ];
             @endphp
  
             @foreach($utama as $item)
             <div class="min-w-full md:min-w-0 snap-center
-                        bg-white text-gray-700 rounded-2xl p-4 shadow-lg">
+                        bg-white text-gray-700 rounded-2xl p-4 shadow-lg flex flex-col items-center">
 
-                <div class="w-full h-48 rounded-xl mb-3">
+                <div class="w-full h-48 rounded-t-xl mb-3">
                     <img src="/assets/{{ $item['img'] }}"
-                        class="w-full h-full object-cover">
+                        class="w-full h-full rounded-t-xl object-cover">
                 </div>
                 <p class="font-bold">{{ $item['nama'] }}</p>
-                <p>Rp. {{ $item['harga'] }}</p>
             </div>
             @endforeach
         </div>
@@ -62,12 +61,10 @@
     </div>
 </section>
 
-<!-- HALAL -->
 <section id="halal" class="w-11/12 mx-auto mt-52 grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
 
-    <!-- Gambar portrait proporsional -->
     <div class="md:col-span-1 bg-linear-to-b from-primary via-primary/0 to-primary/0 via-75% h-[600px] rounded-full p-4 flex items-end justify-center">
-        <img src="/assets/halal.jpg" class="w-full md:w-auto h-[360px] object-cover shadow-lg">
+        <img src="/assets/halal.png" class="w-full md:w-auto h-[330px] object-cover">
     </div>
     <div class="md:col-span-2">
         <h2 class="text-4xl font-bold mb-4 leading-snug">Halal is My Life</h2>

@@ -7,8 +7,8 @@
 
         <nav class="hidden md:flex space-x-6 text-sm">
             <a href="{{ route('katalog.index') }}" class="hover:text-red-600">Katalog Produk</a>
-            <a href="#halal" class="hover:text-red-600">Sertifikat Halal</a>
-            <a href="#tentang" class="hover:text-red-600">Tentang Kami</a>
+            <a href="{{ route('user.homepage') }}#halal" class="hover:text-red-600">Sertifikat Halal</a>
+            <a href="{{ route('user.homepage') }}#tentang" class="hover:text-red-600">Tentang Kami</a>
         </nav>
 
         <button @click="open = true"

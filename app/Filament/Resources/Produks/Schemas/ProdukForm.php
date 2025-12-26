@@ -17,7 +17,9 @@ class ProdukForm
                     ->image()
                     ->directory('produk')
                     ->disk('public')
-                    ->imageEditor(),
+                    ->visibility('public')
+                    ->imageEditor()
+                    ->preserveFilenames(),
                 TextInput::make('nama_produk')
                     ->required(),
                 TextInput::make('harga_produk')

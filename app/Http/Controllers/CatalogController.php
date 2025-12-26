@@ -8,19 +8,22 @@ use App\Models\Kategori;
 
 class CatalogController extends Controller
 {
-    
+
     public function index(Request $request)
     {
-        $produks = Produk::query();
+        $kategoris = Kategori::all();
 
-        if ($request->has('kategori')) {
-            $produks->whereIn('kategori_id', $request->kategori);
-        }
+        $produks = Produk::query()
+            ->when($request->search, function ($query, $search) {
+                $query->where('nama_produk', 'like', "%{$search}%");
+            })
+            ->when($request->kategori, function ($query, $kategori) {
+                $query->whereIn('kategori_id', $kategori);
+            })
+            ->with('kategori')
+            ->paginate(8);
 
-        return view('user.catalog', [
-            'produks' => $produks->paginate(8)->withQueryString(),
-            'kategoris' => Kategori::all(),
-        ]);
+        return view('user.catalog', compact('produks', 'kategoris'));
     }
 }
 

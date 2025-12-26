@@ -37,7 +37,7 @@ class StatsOverview extends BaseWidget
             ->sum('total');
 
         $omsetawal = Transaksi::query()
-            ->when($startDate, fn($query) => $query->where('tanggal_transaksi', '<=', $startDate))
+            ->when($startDate, fn($query) => $query->where('tanggal_transaksi', '<', $startDate))
             ->when($produk, fn($query) => $query->where('produk_id', $produk))
             ->orderBy('tanggal_transaksi')
             ->sum('total');
@@ -49,7 +49,7 @@ class StatsOverview extends BaseWidget
             ->sum('quantity');
 
         $terjualtsebelumnya = Transaksi::query()
-            ->when($startDate, fn($query) => $query->where('tanggal_transaksi', '<=', $startDate))
+            ->when($startDate, fn($query) => $query->where('tanggal_transaksi', '<', $startDate))
             ->when($produk, fn($query) => $query->where('produk_id', $produk))
             ->orderBy('tanggal_transaksi')
             ->sum('quantity');

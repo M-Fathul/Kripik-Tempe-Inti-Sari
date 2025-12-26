@@ -3,27 +3,34 @@
 
         <div>
             <h2 class="font-bold mb-3">Kripik Inti Sari</h2>
-            <p class="text-sm text-gray-600">
+            <a href="https://maps.app.goo.gl/KCiQp3nwadY4ySj29" target="_blank" class="hover:text-primary text-sm text-gray-600">
                 Jl. Pramuka No.240, Somodro,<br>
                 Purwokerto Kidul, Banyumas, Jawa Tengah<br>
                 53147
-            </p>
+            </a>
         </div>
 
         <div>
             <h2 class="font-bold mb-3">Kontak</h2>
             <ul class="text-sm text-gray-600 space-y-1">
-                <li>Whatsapp</li>
-                <li>Email</li>
+                <li>
+                    <a href="https://wa.me/6281226000034" class="hover:text-primary">Whatsapp</a>
+                </li>
             </ul>
         </div>
 
         <div>
             <h2 class="font-bold mb-3">Usaha</h2>
             <ul class="text-sm text-gray-600 space-y-1">
-                <li>Produk</li>
-                <li>Sertifikat Halal</li>
-                <li>Tentang Kami</li>
+                <li>
+                    <a href="{{ route('katalog.index') }}" class="hover:text-primary">Produk
+                </li>
+                <li>
+                    <a href="{{ route('user.homepage') }}#halal" class="hover:text-primary">Sertifikat Halal</a>
+                </li>
+                <li>
+                    <a href="{{ route('user.homepage') }}#tentang" class="hover:text-primary">Tentang Kami</a>
+                </li>
             </ul>
         </div>
 
