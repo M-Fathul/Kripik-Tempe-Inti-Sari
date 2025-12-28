@@ -51,10 +51,11 @@
         @forelse($produks as $produk)
             <div class="bg-white h-28 rounded-r-3xl col-span-2 shadow-md flex pr-6">
                 <div class="w-4 h-full bg-secondary"></div>
-
-                <img src="{{ asset('storage/' . $produk->image) }}"
+                <img src="{{ $produk->image
+                        ? asset('storage/' . $produk->image)
+                        : asset('assets/image_no.png') }}"
                     class="w-full h-full object-cover">
-
+                    
                 <div class="p-4 flex flex-col w-full justify-center">
                     <p class="font-semibold">
                         {{ $produk->nama_produk }}
@@ -62,7 +63,7 @@
 
                     <div class="flex justify-between w-full mt-2">
                         <p class="font-light text-sm">
-                            {{ $produk->kategori->nama_kategori }}
+                            {{ $produk->kategori?->nama_kategori ?? '-' }}
                         </p>
                         <small class="text-light">
                             Stok: {{ $produk->stok }}
@@ -81,7 +82,7 @@
 
         @empty
             <div class="col-span-2 md:col-span-4 flex justify-center">
-                <div class="bg-white shadow rounded-xl p-8 text-center w-full md:w-1/2">
+                <div class=" p-8 text-center w-full md:w-1/2">
                     <h3 class="text-lg font-semibold text-gray-700">
                         Produk tidak ditemukan
                     </h3>
@@ -92,7 +93,7 @@
             </div>
         @endforelse
 
-        <div class="col-span-2 md:col-span-4 flex justify-center mt-6">
+        <div class="col-span-2 mb-10 md:col-span-4 flex justify-center mt-6">
             {{ $produks->withQueryString()->links() }}
         </div>
 
