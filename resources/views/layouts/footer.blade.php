@@ -16,6 +16,9 @@
                 <li>
                     <a href="https://wa.me/6281226000034" class="hover:text-primary">Whatsapp</a>
                 </li>
+                <li>
+                    <a href="https://www.instagram.com/intisarikripik/" class="hover:text-primary">Instagram</a>
+                </li>
             </ul>
         </div>
 
