@@ -22,6 +22,12 @@ class ProdukResource extends Resource
 {
     protected static ?string $model = Produk::class;
 
+    protected static ?string $navigationLabel = 'Produk';
+
+    protected static ?string $pluralLabel = 'Produk';
+
+    protected static ?string $slug = 'produk';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema
