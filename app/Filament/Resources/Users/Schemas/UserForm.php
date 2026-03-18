@@ -21,6 +21,7 @@ class UserForm
                     ->required(),
                 TextInput::make('password')
                     ->password()
+                    ->revealable(true)
                     ->required(),
                 Select::make('role')
                     ->options(['admin' => 'Admin', 'karyawan' => 'Karyawan'])

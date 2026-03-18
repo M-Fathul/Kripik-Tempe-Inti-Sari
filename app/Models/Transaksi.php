@@ -28,7 +28,7 @@ class Transaksi extends Model
 
     public function produk(): BelongsTo
     {
-        return $this->belongsTo(Produk::class);
+        return $this->belongsTo(Produk::class)->withTrashed();
     }
 
     public function setTanggalTransaksiAttribute($value)
@@ -51,4 +51,5 @@ class Transaksi extends Model
             $this->attributes['tanggal_transaksi'] = null;
         }
     }
+
 }

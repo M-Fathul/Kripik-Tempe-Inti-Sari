@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\QuantityChart;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Pages\Dashboard as BaseDashboard;
@@ -10,23 +11,25 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use App\Models\Transaksi;
 use App\Models\Produk;
+use Carbon\Carbon;
 
 class Dashboard extends BaseDashboard
 {
-    // protected string $view = 'filament.pages.dashboard';
+    protected string $view = 'filament.pages.dashboard';
 
     use BaseDashboard\Concerns\HasFiltersForm;
 
     public function filtersForm(Schema $schema): Schema
     {
-        $tanggalawal = Transaksi::min('tanggal_transaksi') ?: now();
-        $tanggalakhir = Transaksi::max('tanggal_transaksi') ?: now();
+        $tanggalawal = Transaksi::min('tanggal_transaksi');
+        $tanggalakhir = Transaksi::max('tanggal_transaksi');
         return $schema
             ->components([
                 Section::make()
                     ->schema([
                         Select::make('produk_id')
                             ->label('Produk')
+                            ->placeholder('Pilih Salah Satu Produk')
                             ->options(Produk::pluck('nama_produk', 'id'))
                             ->searchable()
                             ->reactive()
@@ -37,7 +40,7 @@ class Dashboard extends BaseDashboard
                             ->reactive()
                             ->minDate($tanggalawal)
                             ->maxDate($tanggalakhir)
-                            ->default($tanggalawal)
+                            ->default(Carbon::parse($tanggalakhir)->startOfMonth())
                             ->closeOnDateSelection(),
                         DatePicker::make('endDate')
                             ->label('Tanggal Akhir')

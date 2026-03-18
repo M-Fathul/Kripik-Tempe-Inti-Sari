@@ -153,11 +153,11 @@ class StatsOverview extends BaseWidget
         return [
             Stat::make('Omset', 'Rp. ' . $formatNumber($omset))
                 ->descriptionIcon($panah($omsetawal, $omsetakhir))
-                ->description('awal periode ' . $ringkas(900000000) . ' akhir periode ' . $ringkas(900000000) . ' ' . $persentase($omsetawal, $omsetakhir))
+                ->description('awal periode ' . $ringkas($omsetawal) . ' akhir periode ' . $ringkas($omsetakhir) . ' ' . $persentase($omsetawal, $omsetakhir))
                 ->chart($chardata($omsetawal, $omsetakhir))
                 ->color($color($omsetawal, $omsetakhir))
                 ->reactive(),
-            Stat::make('Terjual', $formatNumber($terjual))
+            Stat::make('Stok Terjual', $formatNumber($terjual))
                 ->descriptionIcon($panah($terjualawal, $terjualakhir))
                 ->description('awal periode ' . $ringkas($terjualawal) . ' akhir periode ' . $ringkas($terjualakhir) . ' ' . $persentase($terjualawal, $terjualakhir))
                 ->chart($chardata($terjualawal, $terjualakhir))
