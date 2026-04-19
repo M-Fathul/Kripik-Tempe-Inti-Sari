@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('harga_produk', 12, 2);
             $table->integer('stok')->default(0);
             $table->integer('total_terjual')->default(0);
-            $table->foreignId('kategori_id')->constrained('kategoris')->nullable();
+            $table->foreignId('kategori_id')->constrained()->nullable();
             $table->enum('status', ['aktif', 'tidak_lanjut'])->default('aktif');
             $table->enum('pemasok', ['orisinil', 'eksternal'])->default('orisinil');
             $table->timestamps();

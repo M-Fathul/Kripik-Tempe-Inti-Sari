@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('forecast_run_id')->constrained()->cascadeOnDelete();
             $table->date('tanggal');
             $table->float('forecast_qyt');
+            $table->float('aktual_qyt')->nullable();
             $table->float('upper')->nullable();
             $table->float('lower')->nullable();
             $table->timestamps();

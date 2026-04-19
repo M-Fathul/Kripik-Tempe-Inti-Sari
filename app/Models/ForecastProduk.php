@@ -11,6 +11,7 @@ class ForecastProduk extends Model
         'forecast_run_id',
         'tanggal',
         'forecast_qyt',
+        'aktual_qyt',
         'upper',
         'lower',
     ];

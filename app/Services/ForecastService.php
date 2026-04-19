@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Http;
 
 class ForecastService
 {
-    public function forecast($produk, $data, $periods = 30)
+    public function forecast($data, $periods)
     {
         $response = Http::timeout(30)
             ->retry(3, 1000)
@@ -12,7 +12,6 @@ class ForecastService
                 'Authorization' => 'Bearer ' . config('services.flask.key'),
             ])
             ->post(config('services.flask.url'), [
-                'produk_id' => $produk->id,
                 'data' => $data,
                 'periods' => $periods,
             ]);
