@@ -2,10 +2,46 @@
 
 namespace App\Filament\Widgets;
 
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
+use Filament\Widgets\ChartWidget\Concerns\HasFiltersSchema;
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use App\Models\ForecastProduk;
 
 class RamalanStock extends ApexChartWidget
 {
+    use InteractsWithPageFilters;
+    use HasFiltersSchema;
+
+    protected static ?int $sort = 5;
+    protected int|string|array $columnSpan = 3;
+
+    public function filtersSchema(Schema $schema): Schema
+    {
+        return $schema->components([
+            Select::make('filter')
+                ->label('Periode')
+                ->options([
+                    'tanggal' => 'Perhari',
+                    'week_number' => 'Perminggu',
+                    'month_name' => 'Perbulan',
+                    'year' => 'Pertahun',
+                ])
+                ->default('tanggal')
+                ->native(false)
+                ->required()
+                ->selectablePlaceholder(false)
+                ->reactive()
+                ->preload(),
+        ]);
+    }
+
+    public function updatedInteractsWithSchemas(string $statePath): void
+    {
+        $this->updateOptions();
+    }
+
     /**
      * Chart Id
      *
@@ -28,22 +64,110 @@ class RamalanStock extends ApexChartWidget
      */
     protected function getOptions(): array
     {
+        $filter = $this->filters['filter'];
+        $produk = $this->pageFilters['produk_id'] ?? null;
+
+        $q = ForecastProduk::query()
+            ->when(
+                $produk,
+                fn($q) =>
+                $q->where('produk_id', $produk)
+            );
+        if ($filter === 'week_number') {
+            $q->selectRaw('
+                 year,
+                 week_number,
+                 CONCAT(LPAD(week_number, 2, "0"), "/", year) as tanggal,
+                 SUM(forecast_qyt) as forecast_qyt,
+                 SUM(aktual_qyt) as aktual_qyt,
+                 SUM(lower) as lower,
+                 SUM(upper) as upper
+             ')
+                ->groupBy('year', 'week_number');
+        } elseif ($filter === 'month_name') {
+            $q->selectRaw('
+                 year,
+                 month_name,
+                 CONCAT(month_name, " ", year) as tanggal,
+                 SUM(forecast_qyt) as forecast_qyt,
+                 SUM(aktual_qyt) as aktual_qyt,
+                 SUM(lower) as lower,
+                 SUM(upper) as upper
+             ')
+                ->groupBy('year', 'month_name');
+        } elseif ($filter === 'year') {
+            $q->selectRaw('
+                 year as tanggal,
+                 SUM(forecast_qyt) as forecast_qyt,
+                 SUM(aktual_qyt) as aktual_qyt,
+                 SUM(lower) as lower,
+                 SUM(upper) as upper
+             ')
+                ->groupBy('year');
+        }
+
+        $data = $q->get();
+        //dd($data);
+        if ($filter === 'tanggal') {
+            $show = false;
+        } else {
+            $show = true;
+        }
         return [
-            'chart' => [
-                'type' => 'line',
-                'height' => 300,
-            ],
             'series' => [
+
                 [
-                    'name' => 'RamalanStock',
-                    'data' => [2, 4, 6, 10, 14, 7, 2, 9, 10, 15, 13, 18],
+                    'type' => 'line',
+                    'name' => 'Stok Terjual',
+                    'data' => $data->map(function ($item) {
+                        return [
+                            'x' => $item->tanggal,
+                            'y' => $item->aktual_qyt,
+                        ];
+                    }),
+                ],
+                [
+                    'type' => 'line',
+                    'name' => 'Ramalan Stok Terjual',
+                    'data' => $data->map(function ($item){
+                        return [
+                            'x' => $item->tanggal,
+                            'y' => $item->forecast_qyt,
+                        ];
+                    }),
+                ],
+                [
+                    'type' => 'rangeArea',
+                    'name' => 'Stok Terjual Maksimal',
+                    'data' => $data->map(function ($item) {
+                        return [
+                            'x' => $item->tanggal,
+                            'y' => [$item->lower, $item->upper],
+                        ];
+                    }),
+                ],
+
+            ],
+            'chart' => [
+                'type' => 'rangeArea',
+                'height' => 425,
+                'animations' => [
+                    'speed' => 300,
                 ],
             ],
+            'colors' => ['#f59e0b', '#3b82f6', '#3b82f6'],
+            'fill' => [
+                'opacity' => [1, 1, 0.24],
+            ],
             'xaxis' => [
-                'categories' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                //'categories' => $data->pluck('tanggal'),
                 'labels' => [
+                    'show' => $show,
+                    'fontFamily' => 'inherit',
+                    'rotate' => 0,
                     'style' => [
-                        'fontFamily' => 'inherit',
+                        'hideOverlappingLabels' => true,
+
                     ],
                 ],
             ],
@@ -54,10 +178,24 @@ class RamalanStock extends ApexChartWidget
                     ],
                 ],
             ],
-            'colors' => ['#f59e0b'],
             'stroke' => [
                 'curve' => 'smooth',
+                'width' => [2, 2, 0],
+            ],
+            'forecastDataPoints' => [
+                'count' => $data->whereNull('aktual_qyt')->count(),
+            ],
+            'dataLabels' => [
+                'enabled' => false,
+            ],
+            'tooltip' => [
+                'shared' => true,
+                'inverseOrder' => true,
+                'onDatasetHover' => [
+                    'highlightDataSeries' => true,
+                ],
             ],
         ];
     }
+
 }

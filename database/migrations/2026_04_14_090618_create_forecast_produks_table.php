@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('produk_id')->constrained()->cascadeOnDelete();
             $table->foreignId('forecast_run_id')->constrained()->cascadeOnDelete();
             $table->date('tanggal');
+            $table->string('month_name');
+            $table->integer('week_number');
+            $table->integer('year');
             $table->float('forecast_qyt');
             $table->float('aktual_qyt')->nullable();
             $table->float('upper')->nullable();
@@ -23,6 +26,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['produk_id', 'forecast_run_id', 'tanggal']);
+            $table->index('produk_id');
         });
     }
 

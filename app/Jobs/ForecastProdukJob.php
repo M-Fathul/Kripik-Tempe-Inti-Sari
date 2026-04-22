@@ -39,11 +39,11 @@ class ForecastProdukJob implements ShouldQueue
         $produk = Produk::find($this->produkID);
         $transaksis = Transaksi::where('produk_id', $this->produkID)
             ->selectRaw('
-                    DATE(tanggal_transaksi) as tanggal_transaksi,
+                    tanggal_transaksi,
                     SUM(quantity) as quantity
                 ')
-            ->groupByRaw('DATE(tanggal_transaksi)')
-            ->orderByRaw('DATE(tanggal_transaksi)')
+            ->groupBy('tanggal_transaksi')
+            ->orderBy('tanggal_transaksi')
             ->get();
         if ($transaksis->isEmpty()) {
             return;
@@ -94,7 +94,6 @@ class ForecastProdukJob implements ShouldQueue
                 ]);
             }
         } catch (\Exception $e) {
-            // Log error atau lakukan penanganan lain jika forecasting gagal
             \Log::error("Forecasting failed for Produk ID {$this->produkID}: " . $e->getMessage());
             return;
         }

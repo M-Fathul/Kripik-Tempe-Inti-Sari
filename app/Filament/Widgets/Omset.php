@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\TransaksisResource\Widgets;
+namespace App\Filament\Widgets;
 
 use Filament\Support\RawJs;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
@@ -11,15 +11,13 @@ use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Filament\Widgets\ChartWidget\Concerns\HasFiltersSchema;
 
-class OmsetChart extends ApexChartWidget
+class Omset extends ApexChartWidget
 {
     protected static ?int $sort = 1;
 
     protected int|string|array $columnSpan = 'full';
     
     use HasFiltersSchema;
-
-    public ?string $filter = 'tanggal_transaksi';
 
     public function filtersSchema(Schema $schema): Schema
     {
@@ -81,12 +79,12 @@ class OmsetChart extends ApexChartWidget
             ->when(
                 $startDate,
                 fn($q) =>
-                $q->whereDate('tanggal_transaksi', '>=', $startDate)
+                $q->where('tanggal_transaksi', '>=', $startDate->startOfDay())
             )
             ->when(
                 $endDate,
                 fn($q) =>
-                $q->whereDate('tanggal_transaksi', '<=', $endDate)
+                $q->where('tanggal_transaksi', '<=', $endDate->endOfDay())
             )
             ->when(
                 $produk,
@@ -129,11 +127,11 @@ class OmsetChart extends ApexChartWidget
 
         } else {
             $q->selectRaw('
-                DATE(tanggal_transaksi) as label,
+                tanggal_transaksi as label,
                 SUM(total) as total_profit
             ')
-                ->groupByRaw('DATE(tanggal_transaksi)')
-                ->orderByRaw('DATE(tanggal_transaksi)');
+                ->groupBy('tanggal_transaksi')
+                ->orderBy('label');
         }
 
         $data = $q->get();
@@ -196,3 +194,4 @@ class OmsetChart extends ApexChartWidget
     JS);
     }
 }
+

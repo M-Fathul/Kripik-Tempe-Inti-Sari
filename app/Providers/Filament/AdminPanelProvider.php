@@ -2,10 +2,12 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Resources\TransaksisResource\Widgets\OmsetChart;
-use App\Filament\Widgets\JenisprodukChart;
+use App\Filament\Widgets\Omset;
+use App\Filament\Widgets\StatsOverview;
+use App\Filament\Widgets\RamalanStock;
 use App\Filament\Widgets\StokChart;
 use App\Filament\Widgets\StokTerjual;
+use App\Filament\Widgets\StatsForecast;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -45,10 +47,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                \App\Filament\Widgets\StatsOverview::class,
-                OmsetChart::class,
+                StatsOverview::class,
+                Omset::class,
                 StokChart::class,
                 StokTerjual::class,
+                RamalanStock::class,
+                StatsForecast::class,
             ])
             ->middleware([
                 EncryptCookies::class,
