@@ -7,6 +7,7 @@ use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Models\ForecastRun;
 use App\Models\ForecastProduk;
+use App\Models\Produk;
 
 class StatsForecast extends StatsOverviewWidget
 {
@@ -29,6 +30,16 @@ class StatsForecast extends StatsOverviewWidget
             ->when($produk, fn($q) => $q->where('produk_id', $produk))
             ->latest()
             ->first();
+        
+        if (!$run) {
+            return [
+                Stat::make('Akurasi', '-')
+                    ->description(Produk::find($this->pageFilters['produk_id'])->nama_produk . ' belum memiliki data forecast')
+                    ->color('secondary'),
+            ];
+        }
+        
+        $mape = $run->mape;
         
         $akurasi = function($mape) {
             $percentage = 100 - $mape;
