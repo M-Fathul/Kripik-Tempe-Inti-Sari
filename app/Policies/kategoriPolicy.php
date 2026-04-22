@@ -29,8 +29,7 @@ class kategoriPolicy
      */
     public function create(User $user): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -38,8 +37,7 @@ class kategoriPolicy
      */
     public function update(User $user, Kategori $kategori): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -47,8 +45,7 @@ class kategoriPolicy
      */
     public function delete(User $user, Kategori $kategori): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -56,14 +53,18 @@ class kategoriPolicy
      */
     public function restore(User $user, Kategori $kategori): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
     public function forceDelete(User $user, Kategori $kategori): bool
+    {
+        return $this->isAdmin($user);
+    }
+
+    private function isAdmin(User $user): bool
     {
         $curuntUser = auth()->user();
         return $curuntUser->role == 'admin' ? true : false;

@@ -4,6 +4,18 @@ use Illuminate\Support\Facades\Http;
 
 class ForecastService
 {
+    private function validateResponse($response): bool
+    {
+        if (!$response->successful()) {
+            \Log::error('API failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+            return false;
+        }
+        return true;
+    }
+    
     public function forecast($data, $periods)
     {
         $response = Http::timeout(30)
@@ -16,16 +28,11 @@ class ForecastService
                 'periods' => $periods,
             ]);
 
-        if (!$response->successful()) {
-            \Log::error('Flask API failed', [
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
-
-            throw new \Exception('Forecast service fail');
-        }
-
-        return $response->json();
+            if (!$this->validateResponse($response)) {
+                throw new \Exception('Forecast failed');
+            }
+            
+            return $response->json();
     }
 
     public function transformData($transaksis)

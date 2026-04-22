@@ -17,6 +17,8 @@ class RamalanStock extends ApexChartWidget
     protected static ?int $sort = 5;
     protected int|string|array $columnSpan = 3;
 
+    
+
     public function filtersSchema(Schema $schema): Schema
     {
         return $schema->components([
@@ -49,6 +51,7 @@ class RamalanStock extends ApexChartWidget
      */
     protected static ?string $chartId = 'ramalanStock';
 
+
     /**
      * Widget Title
      *
@@ -66,6 +69,20 @@ class RamalanStock extends ApexChartWidget
     {
         $filter = $this->filters['filter'];
         $produk = $this->pageFilters['produk_id'] ?? null;
+
+        if (!$produk) {
+            return [
+                'series' => [],
+                'chart' => [
+                    'type' => 'line',
+                    'height' => 425,
+                ],
+                'xaxis' => [
+                    'categories' => [],
+                ],
+            ];
+        }
+        
 
         $q = ForecastProduk::query()
             ->when(

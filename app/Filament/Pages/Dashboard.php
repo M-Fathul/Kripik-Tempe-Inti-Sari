@@ -14,7 +14,7 @@ use Carbon\Carbon;
 
 class Dashboard extends BaseDashboard
 {
-    protected string $view = 'filament.pages.dashboard';
+
 
     use BaseDashboard\Concerns\HasFiltersForm;
 

@@ -12,8 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -21,8 +20,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -30,8 +28,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -39,8 +36,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -48,8 +44,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -57,14 +52,18 @@ class UserPolicy
      */
     public function restore(User $user, User $model): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
     public function forceDelete(User $user, User $model): bool
+    {
+        return $this->isAdmin($user);
+    }
+
+    private function isAdmin(User $user): bool
     {
         $curuntUser = auth()->user();
         return $curuntUser->role == 'admin' ? true : false;

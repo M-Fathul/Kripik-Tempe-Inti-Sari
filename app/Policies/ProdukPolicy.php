@@ -29,8 +29,7 @@ class ProdukPolicy
      */
     public function create(User $user): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -38,8 +37,7 @@ class ProdukPolicy
      */
     public function update(User $user, Produk $produk): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -47,8 +45,7 @@ class ProdukPolicy
      */
     public function delete(User $user, Produk $produk): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -56,8 +53,7 @@ class ProdukPolicy
      */
     public function restore(User $user, Produk $produk): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -65,7 +61,11 @@ class ProdukPolicy
      */
     public function forceDelete(User $user, Produk $produk): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $this->isAdmin($user);
+    }
+
+    private function isAdmin(User $user): bool
+    {
+        return $user->role === 'admin';
     }
 }

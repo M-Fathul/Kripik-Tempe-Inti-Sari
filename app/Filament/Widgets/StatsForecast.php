@@ -18,6 +18,13 @@ class StatsForecast extends StatsOverviewWidget
     protected function getStats(): array
     {
         $produk = $this->pageFilters['produk_id'] ?? null;
+        if (!$produk) {
+            return [
+                Stat::make('Akurasi', '-')
+                    ->description('Pilih produk untuk melihat akurasi')
+                    ->color('secondary'),
+            ];
+        }
         $run = ForecastRun::query()
             ->when($produk, fn($q) => $q->where('produk_id', $produk))
             ->latest()
@@ -37,6 +44,11 @@ class StatsForecast extends StatsOverviewWidget
             ->when($produk, fn($q) => $q->where('produk_id', $produk))
             ->whereNull('aktual_qyt')
             ->sum('upper');
+        
+        $ramalanmin = ForecastProduk::query()
+            ->when($produk, fn($q) => $q->where('produk_id', $produk))
+            ->whereNull('aktual_qyt')
+            ->sum('lower');
         
         $ramalan = ForecastProduk::query()
             ->when($produk, fn($q) => $q->where('produk_id', $produk))
@@ -67,10 +79,11 @@ class StatsForecast extends StatsOverviewWidget
                 ->description('Aktual ' . $aktual . ' | Ramalan ' . $ramalan)
                 ->color($color($run->mape ?? 0)),
             Stat::make('Ramalan Kebutuhan ' . $run->periods . ' Hari Kedepan', $future)
-                ->description('Ramalan Maks ' . $ramalanmaks)
-                ->color('primary'),
+                ->description('Ramalan Maks ' . $ramalanmaks . ' | Min ' . $ramalanmin)
+                ->color($color($run->mape ?? 0)),
             stat::make('Himbauan', $insight['summary'] ?? 'Tidak ada himbauan')
                 ->description($insight['reason'] ?? 'Tidak ada alasan himbauan')
+                ->color($color($run->mape ?? 0))
         ];
     }
 }
