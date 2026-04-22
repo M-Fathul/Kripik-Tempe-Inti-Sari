@@ -81,7 +81,7 @@ class StatsForecast extends StatsOverviewWidget
             Stat::make('Ramalan Kebutuhan ' . $run->periods . ' Hari Kedepan', $future)
                 ->description('Ramalan Maks ' . $ramalanmaks . ' | Min ' . $ramalanmin)
                 ->color($color($run->mape ?? 0)),
-            stat::make('Himbauan', $insight['summary'] ?? 'Tidak ada himbauan')
+            Stat::make('Himbauan', $insight['summary'] ?? 'Tidak ada himbauan')
                 ->description($insight['reason'] ?? 'Tidak ada alasan himbauan')
                 ->color($color($run->mape ?? 0))
         ];

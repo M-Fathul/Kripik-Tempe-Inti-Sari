@@ -12,8 +12,8 @@ use Illuminate\Queue\SerializesModels;
 use App\Services\ForecastService;
 use App\Models\ForecastRun;
 use App\Models\ForecastProduk;
-use Laravel\Pail\ValueObjects\Origin\Console;
-
+use App\Models\User;
+use Filament\Notifications\Notification;
 
 class ForecastProdukJob implements ShouldQueue
 {
@@ -94,6 +94,16 @@ class ForecastProdukJob implements ShouldQueue
                 ]);
             }
         } catch (\Exception $e) {
+            $recipients = auth()->user();
+            if ($recipients->role == 'admin') {
+                $recipients->notify(
+                Notification::make()
+                    ->title('Forecasting Gagal')
+                    ->body("Forecasting untuk produk {$produk->nama} gagal: " . $e->getMessage())
+                    ->danger()
+                    ->toDatabase()
+                );
+            }
             \Log::error("Forecasting failed for Produk ID {$this->produkID}: " . $e->getMessage());
             return;
         }

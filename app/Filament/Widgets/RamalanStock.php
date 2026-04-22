@@ -124,7 +124,7 @@ class RamalanStock extends ApexChartWidget
         }
 
         $data = $q->get();
-        //dd($data);
+        dd($data);
         if ($filter === 'tanggal') {
             $show = false;
         } else {
