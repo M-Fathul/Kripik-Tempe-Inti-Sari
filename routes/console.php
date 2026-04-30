@@ -12,7 +12,6 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::call(function () {
-
     $produks = Produk::where('status', 'aktif')->get();
 
     foreach ($produks as $produk) {
@@ -20,10 +19,11 @@ Schedule::call(function () {
             ->latest()
             ->first();
 
-        if ($latestRun && now()->month === $latestRun->created_at->month) {
+        if ($latestRun && now()->month === $latestRun->created_at->month
+                       && now()->year  === $latestRun->created_at->year) { 
             continue;
         }
+
         ForecastProdukJob::dispatch($produk->id, 30);
     }
-
 })->monthlyOn(1, '00:00');

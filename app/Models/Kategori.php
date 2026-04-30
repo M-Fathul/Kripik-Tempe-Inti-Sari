@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Kategori extends Model
 {
     use SoftDeletes;
+    protected $fillable = [
+        'nama_kategori',
+    ];
     public function produk(): HasMany
     {
         return $this->hasMany(Produk::class);

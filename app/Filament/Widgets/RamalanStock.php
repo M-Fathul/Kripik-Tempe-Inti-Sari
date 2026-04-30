@@ -155,7 +155,7 @@ class RamalanStock extends ApexChartWidget
                 ],
                 [
                     'type' => 'rangeArea',
-                    'name' => 'Stok Terjual Maksimal',
+                    'name' => 'Rentan Stok Terjual',
                     'data' => $data->map(function ($item) {
                         return [
                             'x' => $item->tanggal,
