@@ -10,7 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\Slider;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -61,66 +61,54 @@ class ProduksTable
             ])
             ->filters([
                 Filter::make('stok')
-                    ->label('Stok')
                     ->form([
-                        Slider::make('stok')
-                            ->label('Range Stok')
-                            ->default(function () {
-                                $maxStok = Produk::max('stok');
-                                return [0, $maxStok];
-                            })
+                        TextInput::make('stok_min')
+                            ->label('Stok Minimal')
+                            ->numeric()
+                            ->default(0)
                             ->minValue(0)
                             ->maxValue(function () {
                                 return Produk::max('stok');
+                            }),
+                        TextInput::make('stok_max')
+                            ->label('Stok Maksimal')
+                            ->numeric()
+                            ->minValue(0)
+                            ->default(function () {
+                                return Produk::max('stok');
                             })
-                            ->step(1)
-                            ->tooltips()
-                            ->minDifference(1)
-                            ->fillTrack([false, true, false]),
+                            ->maxValue(function () {
+                                return Produk::max('stok');
+                            }),
+                        
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        if (empty($data['stok'])) {
-                            return $query;
-                        }
-
-                        $stokRange = $data['stok'];
-
-                        if (is_array($stokRange) && count($stokRange) === 2) {
-                            $query = $query->whereBetween('stok', [$stokRange[0], $stokRange[1]]);
-                        }
-
-                        return $query;
+                        return $query->whereBetween('stok', [$data['stok_min'], $data['stok_max']]);
                     }),
                 Filter::make('total_terjual')
-                    ->label('Terjual')
                     ->form([
-                        Slider::make('total_terjual')
-                            ->label('Range Terjual')
-                            ->default(function () {
-                                $maxStok = Produk::max('total_terjual');
-                                return [0, $maxStok];
-                            })
+                        TextInput::make('total_terjual_min')
+                            ->label('Total Terjual Minimal')
+                            ->numeric()
+                            ->default(0)
                             ->minValue(0)
                             ->maxValue(function () {
                                 return Produk::max('total_terjual');
+                            }),
+                        TextInput::make('total_terjual_max')
+                            ->label('Total Terjual Maksimal')
+                            ->numeric()
+                            ->minValue(0)
+                            ->default(function () {
+                                return Produk::max('total_terjual');
                             })
-                            ->step(1)
-                            ->tooltips()
-                            ->minDifference(1)
-                            ->fillTrack([false, true, false]),
+                            ->maxValue(function () {
+                                return Produk::max('total_terjual');
+                            }),
+                        
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        if (empty($data['total_terjual'])) {
-                            return $query;
-                        }
-
-                        $stokRange = $data['total_terjual'];
-
-                        if (is_array($stokRange) && count($stokRange) === 2) {
-                            $query = $query->whereBetween('total_terjual', [$stokRange[0], $stokRange[1]]);
-                        }
-
-                        return $query;
+                        return $query->whereBetween('total_terjual', [$data['total_terjual_min'], $data['total_terjual_max']]);
                     }),
                 SelectFilter::make('kategori_id')
                     ->label('Kategori')

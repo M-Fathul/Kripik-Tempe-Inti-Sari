@@ -42,6 +42,14 @@ class ForecastProdukJob implements ShouldQueue
             ->get();
 
         if ($transaksis->isEmpty()) {
+            $admins = User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                Notification::make()
+                    ->title('Forecast Gagal')
+                    ->body("Produk ID {$this->produkID} tidak memiliki data transaksi untuk forecasting.")
+                    ->danger()
+                    ->sendToDatabase($admin);
+            }
             return; 
         }
 
@@ -49,6 +57,7 @@ class ForecastProdukJob implements ShouldQueue
         $data = $service->transformData($transaksis);
         $result = $service->forecast($data, $this->periods);
 
+        ForecastRun::where('produk_id', $produk->id)->delete();
         $run = ForecastRun::create([
             'produk_id' => $produk->id,
             'mape'        => $result['mape'],

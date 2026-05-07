@@ -91,10 +91,20 @@ class TransaksiResource extends Resource
                         $set('total', $produk ? $produk->harga_produk * $quantity : 0);
                     }),
                 TextInput::make('quantity')
+                    ->label('Kuantitas')
                     ->required()
                     ->numeric()
                     ->reactive()
                     ->default(1)
+                    ->minValue(1)
+                    ->maxValue(function (callable $get) {
+                        $produkId = $get('produk_id');
+                        if (!$produkId) {
+                            return 1;
+                        }
+                        $produk = Produk::find($produkId);
+                        return $produk ? $produk->stok : 1;
+                    })
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $produk = Produk::find($get('produk_id'));
                         $set('total', $produk ? $produk->harga_produk * $state : 0);
@@ -106,16 +116,13 @@ class TransaksiResource extends Resource
                     ->default(0)
                     ->prefix('Rp '),
                 TextInput::make('month_name')
-                    ->label('Bulan')
                     ->required()
                     ->default(now()->monthName),
                 TextInput::make('year')
-                    ->label('Tahun')
                     ->required()
                     ->numeric()
                     ->default(now()->year),
                 TextInput::make('week_number')
-                    ->label('Minggu ke-')
                     ->required()
                     ->numeric()
                     ->default(now()->weekOfYear),

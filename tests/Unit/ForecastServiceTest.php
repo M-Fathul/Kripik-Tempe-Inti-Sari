@@ -19,8 +19,6 @@ class ForecastServiceTest extends TestCase
         $this->service = new ForecastService();
     }
 
-    // ── Skenario 1: Server mati (connection refused) ─────────────────────────
-    // Tidak ada Log::error karena exception terjadi sebelum validateResponse()
 
     public function test_throws_exception_when_server_is_down(): void
     {

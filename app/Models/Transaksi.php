@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Transaksi extends Model
 {
     use SoftDeletes;
-
     protected $fillable = [
         'tanggal_transaksi',
         'produk_id',
@@ -25,12 +24,10 @@ class Transaksi extends Model
         'week_number',
     ];
 
-
     public function produk(): BelongsTo
     {
         return $this->belongsTo(Produk::class)->withTrashed();
     }
-
     public function setTanggalTransaksiAttribute($value)
     {
         if (!$value) {

@@ -23,7 +23,7 @@ class Omset extends ApexChartWidget
     {
         return  $schema->components([
             Select::make('filter')
-            ->label('Periode')
+            ->label('Garanularitas')
             ->options([
                 'tanggal_transaksi' => 'Perhari',
                 'week_number' => 'Perminggu',

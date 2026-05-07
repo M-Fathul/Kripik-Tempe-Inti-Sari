@@ -25,14 +25,17 @@ class ProdukForm
                 TextInput::make('harga_produk')
                     ->required()
                     ->prefix('Rp.')
-                    ->numeric(),
+                    ->numeric()
+                    ->minValue(0),
                 TextInput::make('stok')
                     ->required()
                     ->numeric()
+                    ->minValue(0)
                     ->default(0),
                 TextInput::make('total_terjual')
                     ->required()
                     ->numeric()
+                    ->minValue(0)
                     ->default(0),
                 Select::make('kategori_id')
                     ->relationship('kategori', 'nama_kategori')

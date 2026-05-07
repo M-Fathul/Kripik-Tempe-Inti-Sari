@@ -155,7 +155,7 @@ class RamalanStock extends ApexChartWidget
                 ],
                 [
                     'type' => 'rangeArea',
-                    'name' => 'Rentan Stok Terjual',
+                    'name' => 'Rentang Stok Terjual',
                     'data' => $data->map(function ($item) {
                         return [
                             'x' => $item->tanggal,
@@ -177,7 +177,6 @@ class RamalanStock extends ApexChartWidget
                 'opacity' => [1, 1, 0.24],
             ],
             'xaxis' => [
-                //'categories' => $data->pluck('tanggal'),
                 'labels' => [
                     'show' => $show,
                     'fontFamily' => 'inherit',
