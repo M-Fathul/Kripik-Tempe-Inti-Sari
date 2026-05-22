@@ -33,6 +33,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->passwordReset()
+            ->profile()
             ->brandName('Kripik Tempe Intisari')
             ->colors([
                 'primary' => Color::Amber,

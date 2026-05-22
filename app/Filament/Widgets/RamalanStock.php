@@ -23,7 +23,7 @@ class RamalanStock extends ApexChartWidget
     {
         return $schema->components([
             Select::make('filter')
-                ->label('Periode')
+                ->label('Granularitas')
                 ->options([
                     'tanggal' => 'Perhari',
                     'week_number' => 'Perminggu',
@@ -75,7 +75,7 @@ class RamalanStock extends ApexChartWidget
                 'series' => [],
                 'chart' => [
                     'type' => 'line',
-                    'height' => 425,
+                    'height' => 400,
                 ],
                 'xaxis' => [
                     'categories' => [],
@@ -167,7 +167,7 @@ class RamalanStock extends ApexChartWidget
             ],
             'chart' => [
                 'type' => 'rangeArea',
-                'height' => 425,
+                'height' => 408,
                 'animations' => [
                     'speed' => 300,
                 ],

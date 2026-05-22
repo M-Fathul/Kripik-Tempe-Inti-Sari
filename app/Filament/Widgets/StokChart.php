@@ -36,7 +36,7 @@ class StokChart extends ApexChartWidget
     {
         return  $schema->components([
             Select::make('filter')
-            ->label('Periode')
+            ->label('Granularitas')
             ->options([
                 'tanggal_transaksi' => 'Perhari',
                 'week_number' => 'Perminggu',
