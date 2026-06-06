@@ -31,23 +31,17 @@ class ForecastServiceTest extends TestCase
         $this->service->forecast([['ds' => '2024-01-01', 'y' => 10]], 30);
     }
 
-    // ── Skenario 2: Timeout ───────────────────────────────────────────────────
-    // Sama seperti server mati — ConnectionException, tidak ada Log::error
-
     public function test_throws_exception_on_timeout(): void
     {
         Http::fake(function () {
             throw new ConnectionException('Connection timed out after 30 seconds');
         });
 
-        // Tidak ada Log::shouldReceive di sini karena validateResponse() tidak dipanggil
         $this->expectException(ConnectionException::class);
         $this->expectExceptionMessageMatches('/timed out/i');
 
         $this->service->forecast([['ds' => '2024-01-01', 'y' => 10]], 30);
     }
-
-    // ── Skenario 3: Flask merespons 500 ──────────────────────────────────────
 
     public function test_throws_exception_on_5xx_response(): void
     {
@@ -62,16 +56,11 @@ class ForecastServiceTest extends TestCase
             ->once()
             ->with('API failed', \Mockery::on(fn($ctx) => $ctx['status'] === 500));
 
-        // ✅ Ganti RequestException → Exception (sama seperti skenario 4xx)
         $this->expectException(\Exception::class);
         $this->expectExceptionMessageMatches('/Forecast API error/');
 
         $this->service->forecast([['ds' => '2024-01-01', 'y' => 10]], 30);
     }
-
-    // ── Skenario 4: Flask merespons 400 ──────────────────────────────────────
-    // retry() TIDAK mengulang 4xx (callback return false)
-    // Langsung masuk validateResponse() → Log::error → Exception kita
 
     public function test_throws_exception_on_4xx_response(): void
     {
@@ -85,14 +74,12 @@ class ForecastServiceTest extends TestCase
                 return $context['status'] === 400;
             }));
 
-        // 4xx tidak di-retry, masuk validateResponse() → throw Exception kita
         $this->expectException(\Exception::class);
         $this->expectExceptionMessageMatches('/Forecast API error/');
 
         $this->service->forecast([['ds' => '2024-01-01', 'y' => 10]], 30);
     }
 
-    // ── Skenario 5: Sukses ────────────────────────────────────────────────────
 
     public function test_returns_parsed_json_on_success(): void
     {
@@ -122,8 +109,6 @@ class ForecastServiceTest extends TestCase
         $this->assertEquals(12.5, $result['mape']);
         $this->assertArrayHasKey('forecast', $result);
     }
-
-    // ── Test transformData ────────────────────────────────────────────────────
 
     public function test_transform_data_formats_correctly(): void
     {

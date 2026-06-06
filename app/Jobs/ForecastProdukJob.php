@@ -39,9 +39,9 @@ class ForecastProdukJob implements ShouldQueue
             ->selectRaw('tanggal_transaksi, SUM(quantity) as quantity')
             ->groupBy('tanggal_transaksi')
             ->orderBy('tanggal_transaksi')
-            ->get();
+            ->get()->toArray();
 
-        if ($transaksis->isEmpty()) {
+        if (empty($transaksis)) {
             $admins = User::where('role', 'admin')->get();
             foreach ($admins as $admin) {
                 Notification::make()
@@ -54,8 +54,7 @@ class ForecastProdukJob implements ShouldQueue
         }
 
         $service = new ForecastService();
-        $data = $service->transformData($transaksis);
-        $result = $service->forecast($data, $this->periods);
+        $result = $service->forecast($transaksis, $this->periods);
 
         ForecastRun::where('produk_id', $produk->id)->delete();
         $run = ForecastRun::create([

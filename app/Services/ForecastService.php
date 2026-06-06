@@ -11,13 +11,10 @@ use filament\Notifications\Notification;
 
 class ForecastService
 {
-    // ── Private: konstanta internal, tidak perlu diketahui luar ─────────────
 
     private const RETRY_TIMES = 3;
     private const RETRY_DELAY = 5;
     private const TIMEOUT     = 30;
-
-    // ── Private: hanya dipakai oleh forecast(), bukan kontrak publik ─────────
 
     private function buildHeaders(): array
     {
@@ -31,7 +28,7 @@ class ForecastService
         if ($exception instanceof RequestException) {
             return $exception->response->status() >= 500;
         }
-        return true; // retry untuk ConnectionException, timeout, dll
+        return true;
     }
 
     private function sendRequest(array $payload): Response
@@ -63,7 +60,6 @@ class ForecastService
         }
     }
 
-    // ── Public: kontrak yang boleh dipanggil dari luar (Job, Controller) ─────
 
     public function forecast(array $data, int $periods): array
     {
@@ -77,13 +73,5 @@ class ForecastService
         }
 
         return $response->json();
-    }
-
-    public function transformData(\Illuminate\Support\Collection $transaksis): array
-    {
-        return $transaksis->map(fn($item) => [
-            'ds' => $item->tanggal_transaksi,
-            'y'  => (int) $item->quantity,
-        ])->values()->toArray();
     }
 }
