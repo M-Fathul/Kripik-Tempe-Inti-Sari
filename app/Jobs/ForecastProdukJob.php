@@ -31,6 +31,7 @@ class ForecastProdukJob implements ShouldQueue
         $this->produkID = $produkID;
         $this->periods = $periods;
     }
+    
 
     public function handle(): void
     {
@@ -46,7 +47,7 @@ class ForecastProdukJob implements ShouldQueue
             foreach ($admins as $admin) {
                 Notification::make()
                     ->title('Forecast Gagal')
-                    ->body("Produk ID {$this->produkID} tidak memiliki data transaksi untuk forecasting.")
+                    ->body("Produk {$produk->nama_produk} tidak memiliki data transaksi untuk forecasting.")
                     ->danger()
                     ->sendToDatabase($admin);
             }
@@ -90,11 +91,12 @@ class ForecastProdukJob implements ShouldQueue
             'error'     => $exception->getMessage(),
         ]);
 
+        $produk = Produk::find($this->produkID);
         $admins = User::where('role', 'admin')->get();
         foreach ($admins as $admin) {
             Notification::make()
                 ->title('Forecast Gagal')
-                ->body("Produk ID {$this->produkID} gagal disimpan setelah 3 percobaan.")
+                ->body("Produk {$produk->nama_produk} gagal disimpan setelah 3 percobaan.")
                 ->danger()
                 ->sendToDatabase($admin);
         }
