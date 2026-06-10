@@ -31,7 +31,7 @@ class ForecastProdukJob implements ShouldQueue
         $this->produkID = $produkID;
         $this->periods = $periods;
     }
-    
+
 
     public function handle(): void
     {
@@ -40,7 +40,12 @@ class ForecastProdukJob implements ShouldQueue
             ->selectRaw('tanggal_transaksi, SUM(quantity) as quantity')
             ->groupBy('tanggal_transaksi')
             ->orderBy('tanggal_transaksi')
-            ->get()->toArray();
+            ->get()
+            ->map(fn($item) => [
+                'tanggal_transaksi' => $item->tanggal_transaksi,
+                'quantity' => (int) $item->quantity
+            ])
+            ->toArray();
 
         if (empty($transaksis)) {
             $admins = User::where('role', 'admin')->get();
@@ -51,7 +56,7 @@ class ForecastProdukJob implements ShouldQueue
                     ->danger()
                     ->sendToDatabase($admin);
             }
-            return; 
+            return;
         }
 
         $service = new ForecastService();
@@ -60,26 +65,46 @@ class ForecastProdukJob implements ShouldQueue
         ForecastRun::where('produk_id', $produk->id)->delete();
         $run = ForecastRun::create([
             'produk_id' => $produk->id,
-            'mape'        => $result['mape'],
-            'insight'     => $result['insight'],
+            'mape' => $result['mape'],
+            'insight' => $result['insight'],
             'train_start' => $result['train_start'],
-            'train_end'   => $result['train_end'],
-            'periods'     => $this->periods,
+            'train_end' => $result['train_end'],
+            'periods' => $this->periods,
         ]);
 
         foreach ($result['validation'] as $row) {
             ForecastProduk::updateOrCreate(
-                ['produk_id' => $produk->id, 'forecast_run_id' => $run->id, 'tanggal' => $row['ds']],
-                ['month_name' => $row['month'], 'week_number' => $row['week'], 'year' => $row['year'],
-                 'forecast_qyt' => $row['yhat'], 'aktual_qyt' => $row['aktual']]
+                [
+                    'produk_id' => $produk->id,
+                    'forecast_run_id' => $run->id,
+                    'tanggal' => $row['tanggal_transaksi'],
+                    'month_name' => $row['month'],
+                    'week_number' => $row['week'],
+                    'year' => $row['year'],
+                ],
+                [
+
+                    'forecast_qyt' => $row['prediction'],
+                    'aktual_qyt' => $row['aktual']
+                ]
             );
         }
 
         foreach ($result['forecast'] as $row) {
             ForecastProduk::updateOrCreate(
-                ['produk_id' => $produk->id, 'forecast_run_id' => $run->id, 'tanggal' => $row['ds']],
-                ['month_name' => $row['month'], 'week_number' => $row['week'], 'year' => $row['year'],
-                 'forecast_qyt' => $row['yhat'], 'upper' => $row['yhat_upper'], 'lower' => $row['yhat_lower']]
+                [
+                    'produk_id' => $produk->id,
+                    'forecast_run_id' => $run->id,
+                    'tanggal' => $row['tanggal_transaksi'],
+                    'month_name' => $row['month'],
+                    'week_number' => $row['week'],
+                    'year' => $row['year'],
+                ],
+                [
+                    'forecast_qyt' => $row['prediction'],
+                    'upper' => $row['yhat_upper'] ?? null,
+                    'lower' => $row['yhat_lower'] ?? null
+                ]
             );
         }
     }
@@ -88,7 +113,7 @@ class ForecastProdukJob implements ShouldQueue
     {
         \Log::critical("ForecastProdukJob permanently failed", [
             'produk_id' => $this->produkID,
-            'error'     => $exception->getMessage(),
+            'error' => $exception->getMessage(),
         ]);
 
         $produk = Produk::find($this->produkID);

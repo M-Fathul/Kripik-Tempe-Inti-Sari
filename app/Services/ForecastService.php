@@ -20,6 +20,7 @@ class ForecastService
     {
         return [
             'Authorization' => 'Bearer ' . config('services.flask.key'),
+            'Content-Type'  => 'application/json',
         ];
     }
 
