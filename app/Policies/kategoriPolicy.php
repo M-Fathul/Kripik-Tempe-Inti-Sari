@@ -4,9 +4,8 @@ namespace App\Policies;
 
 use App\Models\Kategori;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
-class kategoriPolicy
+class KategoriPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -66,7 +65,6 @@ class kategoriPolicy
 
     private function isAdmin(User $user): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $user->role === 'admin';
     }
 }

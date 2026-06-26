@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
@@ -65,7 +64,6 @@ class UserPolicy
 
     private function isAdmin(User $user): bool
     {
-        $curuntUser = auth()->user();
-        return $curuntUser->role == 'admin' ? true : false;
+        return $user->role === 'admin';
     }
 }

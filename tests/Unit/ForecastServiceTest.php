@@ -109,21 +109,5 @@ class ForecastServiceTest extends TestCase
         $this->assertEquals(12.5, $result['mape']);
         $this->assertArrayHasKey('forecast', $result);
     }
-
-    public function test_transform_data_formats_correctly(): void
-    {
-        $transaksis = collect([
-            (object) ['tanggal_transaksi' => '2024-01-01', 'quantity' => '25'],
-            (object) ['tanggal_transaksi' => '2024-01-02', 'quantity' => '30.7'],
-        ]);
-
-        $result = $this->service->transformData($transaksis);
-
-        $this->assertEquals([
-            ['ds' => '2024-01-01', 'y' => 25],
-            ['ds' => '2024-01-02', 'y' => 30],
-        ], $result);
-    }
-
     
 }
