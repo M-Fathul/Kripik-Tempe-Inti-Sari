@@ -23,7 +23,9 @@ class StokTerjual extends ApexChartWidget
      * @var string|null
      */
     protected static ?string $heading = 'Stok Produk Terjual';
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 4;
+
+    protected int|string|array $columnSpan = 2;
 
     use InteractsWithPageFilters;
 

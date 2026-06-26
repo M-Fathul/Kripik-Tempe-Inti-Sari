@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('tanggal_transaksi')->useCurrent();
+            $table->date('tanggal_transaksi')->useCurrent();
             $table->foreignId('produk_id')->constrained('produks')->cascadeOnDelete();
             $table->integer('quantity');
             $table->decimal('total', 12, 2);
@@ -26,8 +26,6 @@ return new class extends Migration
             $table->index('tanggal_transaksi');
             $table->index('produk_id');
             $table->index(['year', 'month_name']);
-            $table->index(['year', 'quarter']);
-            $table->index('day_of_week');
             $table->index(['produk_id', 'tanggal_transaksi']);
         });
     }

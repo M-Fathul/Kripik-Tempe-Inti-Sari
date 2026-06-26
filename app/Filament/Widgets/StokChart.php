@@ -30,14 +30,13 @@ class StokChart extends ApexChartWidget
     use HasFiltersSchema;
 
     protected static ?int $sort = 2;
-
-    public ?string $filter = 'tanggal_transaksi';
+    protected int|string|array $columnSpan = 2;
 
     public function filtersSchema(Schema $schema): Schema
     {
         return  $schema->components([
             Select::make('filter')
-            ->label('Periode')
+            ->label('Granularitas')
             ->options([
                 'tanggal_transaksi' => 'Perhari',
                 'week_number' => 'Perminggu',
@@ -76,19 +75,18 @@ class StokChart extends ApexChartWidget
             ->when(
                 $startDate,
                 fn($q) =>
-                $q->whereDate('tanggal_transaksi', '>=', $startDate)
+                $q->where('tanggal_transaksi', '>=', $startDate)
             )
             ->when(
                 $endDate,
                 fn($q) =>
-                $q->whereDate('tanggal_transaksi', '<=', $endDate)
+                $q->where('tanggal_transaksi', '<=', $endDate)
             )
             ->when(
                 $produk,
                 fn($q) =>
                 $q->where('produk_id', $produk)
             );
-
         if ($filter === 'week_number') {
 
             $q->selectRaw('
@@ -124,15 +122,15 @@ class StokChart extends ApexChartWidget
 
         } else {
             $q->selectRaw('
-                DATE(tanggal_transaksi) as label,
+                tanggal_transaksi as label,
                 SUM(quantity) as total_quantity
             ')
-                ->groupByRaw('DATE(tanggal_transaksi)')
-                ->orderByRaw('DATE(tanggal_transaksi)');
+                ->groupBy('tanggal_transaksi')
+                ->orderBy('tanggal_transaksi');
         }
 
         $data = $q->get();
-
+        //dd($data);
         if ($filter === 'tanggal_transaksi'){
             $show = false;
         }else{

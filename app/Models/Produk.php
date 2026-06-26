@@ -10,6 +10,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Produk extends Model
 {
     use SoftDeletes;
+    protected $fillable = [
+        'image',
+        'nama_produk',
+        'harga_produk',
+        'stok',
+        'total_terjual',
+        'kategori_id',
+        'status',
+        'pemasok',
+    ];
     public function kategori(): BelongsTo
     {
         return $this->belongsTo(Kategori::class);
