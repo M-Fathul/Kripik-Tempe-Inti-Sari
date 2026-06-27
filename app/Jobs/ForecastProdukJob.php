@@ -65,10 +65,8 @@ class ForecastProdukJob implements ShouldQueue
         ForecastRun::where('produk_id', $produk->id)->delete();
         $run = ForecastRun::create([
             'produk_id' => $produk->id,
-            'mape' => $result['mape'],
+            'akurasi' => $result['akurasi'],
             'insight' => $result['insight'],
-            'train_start' => $result['train_start'],
-            'train_end' => $result['train_end'],
             'periods' => $this->periods,
         ]);
 

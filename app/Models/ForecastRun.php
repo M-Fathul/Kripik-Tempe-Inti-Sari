@@ -8,10 +8,8 @@ class ForecastRun extends Model
 {
     protected $fillable = [
         'produk_id',
-        'mape',
+        'akurasi',
         'insight',
-        'train_start',
-        'train_end',
         'periods',
     ];
 
