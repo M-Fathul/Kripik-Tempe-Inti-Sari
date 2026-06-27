@@ -13,10 +13,8 @@ return new class extends Migration {
         Schema::create('forecast_runs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('produk_id')->constrained()->cascadeOnDelete();
-            $table->float('mape')->nullable();
+            $table->float('akurasi')->nullable();
             $table->json('insight')->nullable();
-            $table->date('train_start');
-            $table->date('train_end');
             $table->integer('periods');
             $table->timestamps();
         });

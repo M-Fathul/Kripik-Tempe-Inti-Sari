@@ -84,10 +84,8 @@ class ForecastServiceTest extends TestCase
     public function test_returns_parsed_json_on_success(): void
     {
         $fakeResponse = [
-            'mape' => 12.5,
+            'akurasi' => 12.5,
             'insight' => 'Tren naik',
-            'train_start' => '2023-01-01',
-            'train_end' => '2023-12-31',
             'validation' => [],
             'forecast' => [
                 [
@@ -106,7 +104,7 @@ class ForecastServiceTest extends TestCase
 
         $result = $this->service->forecast([['ds' => '2024-01-01', 'y' => 10]], 30);
 
-        $this->assertEquals(12.5, $result['mape']);
+        $this->assertEquals(12.5, $result['akurasi']);
         $this->assertArrayHasKey('forecast', $result);
     }
     

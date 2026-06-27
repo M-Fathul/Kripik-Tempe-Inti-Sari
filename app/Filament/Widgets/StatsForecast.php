@@ -39,10 +39,10 @@ class StatsForecast extends StatsOverviewWidget
             ];
         }
         
-        $mape = $run->mape;
+        $akurasi = $run->akurasi;
         
-        $akurasi = function($mape) {
-            $percentage = $mape;
+        $akurasi = function($akurasi) {
+            $percentage = $akurasi;
             return number_format($percentage, 1) . '%';
         };
 
@@ -75,10 +75,10 @@ class StatsForecast extends StatsOverviewWidget
 
 
 
-        $color = function($mape) {
-            if ($mape >= 85) {
+        $color = function($akurasi) {
+            if ($akurasi >= 85) {
                 return 'success';
-            } elseif ($mape >= 75) {
+            } elseif ($akurasi >= 75) {
                 return 'warning';
             } else {
                 return 'danger';
@@ -86,15 +86,15 @@ class StatsForecast extends StatsOverviewWidget
         };
         return [
             
-            Stat::make('Akurasi', $akurasi($mape))
+            Stat::make('Akurasi', $akurasi($akurasi))
                 ->description('Total Aktual ' . $aktual . ' | Ramalan ' . $ramalan)
-                ->color($color($run->mape ?? 0)),
+                ->color($color($run->akurasi ?? 0)),
             Stat::make('Total Ramalan Kebutuhan ' . $run->periods . ' Hari Kedepan', $future)
                 ->description('Total Ramalan Maks ' . $ramalanmaks . ' | Min ' . $ramalanmin)
-                ->color($color($run->mape ?? 0)),
+                ->color($color($run->akurasi ?? 0)),
             Stat::make('Himbauan', $insight['summary'] ?? 'Tidak ada himbauan')
                 ->description($insight['reason'] ?? 'Tidak ada alasan himbauan')
-                ->color($color($run->mape ?? 0))
+                ->color($color($run->akurasi ?? 0))
         ];
     }
 }
