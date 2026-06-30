@@ -18,6 +18,14 @@ class Dashboard extends BaseDashboard
 
     use BaseDashboard\Concerns\HasFiltersForm;
 
+    public function getColumns(): int | array
+    {
+        return [
+            'md' => 2,
+            'xl' => 4,
+        ];
+    }
+
     public function filtersForm(Schema $schema): Schema
     {
         $tanggalawal = Transaksi::min('tanggal_transaksi');
